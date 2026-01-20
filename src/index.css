@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 6%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 142.1 76.2% 36.3%;
+    --radius: 0.5rem;
+  }
+
+  body {
+    @apply bg-slate-950 text-white antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #0a0f1a 0%, #111827 50%, #0a0f1a 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* Burn Card - The "Make It Hurt" Component */
+  .burn-card {
+    @apply relative overflow-hidden rounded-xl border border-burn-900/50 bg-gradient-to-br from-burn-950/80 to-slate-900/80 backdrop-blur-sm;
+    box-shadow: 
+      0 0 20px rgba(239, 68, 68, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .burn-card.critical {
+    @apply animate-glow border-burn-600/50;
+    background: linear-gradient(135deg, rgba(127, 29, 29, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
+  }
+
+  /* Secure Card - Green/Revenue */
+  .secure-card {
+    @apply relative overflow-hidden rounded-xl border border-secure-900/50 bg-gradient-to-br from-secure-950/80 to-slate-900/80 backdrop-blur-sm;
+    box-shadow: 
+      0 0 20px rgba(34, 197, 94, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* The Burn Ticker */
+  .burn-ticker {
+    @apply font-mono text-5xl font-bold text-burn-500 tabular-nums tracking-tight;
+    text-shadow: 
+      0 0 20px rgba(239, 68, 68, 0.5),
+      0 0 40px rgba(239, 68, 68, 0.3);
+  }
+
+  .burn-ticker.animating {
+    @apply animate-ticker;
+  }
+
+  /* Secure Ticker */
+  .secure-ticker {
+    @apply font-mono text-5xl font-bold text-secure-500 tabular-nums tracking-tight;
+    text-shadow: 
+      0 0 20px rgba(34, 197, 94, 0.5),
+      0 0 40px rgba(34, 197, 94, 0.3);
+  }
+
+  /* Status Badge */
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .status-badge.burn {
+    @apply bg-burn-950/80 text-burn-400 border border-burn-800/50;
+  }
+
+  .status-badge.billable {
+    @apply bg-secure-950/80 text-secure-400 border border-secure-800/50;
+  }
+
+  .status-badge.unclassified {
+    @apply bg-slate-800/80 text-slate-400 border border-slate-700/50;
+  }
+
+  /* Control Panel Button */
+  .control-btn {
+    @apply relative inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200;
+    @apply border border-slate-700/50 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200;
+  }
+
+  .control-btn.danger {
+    @apply border-burn-700/50 bg-burn-950/50 hover:bg-burn-900/50 text-burn-400;
+  }
+
+  .control-btn.success {
+    @apply border-secure-700/50 bg-secure-950/50 hover:bg-secure-900/50 text-secure-400;
+  }
+
+  /* Feed Item */
+  .feed-item {
+    @apply flex items-center justify-between p-4 rounded-lg border border-slate-800/50 bg-slate-900/50 hover:bg-slate-800/30 transition-colors;
+  }
+
+  .feed-item.burn {
+    @apply border-l-4 border-l-burn-500 bg-burn-950/20;
+  }
+
+  .feed-item.billable {
+    @apply border-l-4 border-l-secure-500 bg-secure-950/20;
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    @apply h-2 rounded-full bg-slate-800 overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply h-full rounded-full transition-all duration-500;
+  }
+
+  .progress-bar-fill.healthy {
+    @apply bg-gradient-to-r from-secure-600 to-secure-400;
+  }
+
+  .progress-bar-fill.warning {
+    @apply bg-gradient-to-r from-yellow-600 to-yellow-400;
+  }
+
+  .progress-bar-fill.critical {
+    @apply bg-gradient-to-r from-burn-600 to-burn-400;
+  }
+
+  /* Sidebar Navigation */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all duration-200;
+  }
+
+  .nav-item.active {
+    @apply text-white bg-slate-800/80 border-l-2 border-burn-500;
+  }
+
+  /* Glass Panel */
+  .glass-panel {
+    @apply rounded-xl border border-slate-800/50 bg-slate-900/50 backdrop-blur-sm;
+  }
+
+  /* The Incinerator Feed Header */
+  .incinerator-header {
+    @apply flex items-center gap-2 text-burn-500 font-display font-semibold;
+  }
+
+  /* Hall of Shame */
+  .shame-row {
+    @apply grid grid-cols-12 gap-4 p-4 border-b border-slate-800/50 hover:bg-burn-950/20 transition-colors;
+  }
+
+  .shame-row:last-child {
+    @apply border-b-0;
+  }
+}
+
+@layer utilities {
+  .text-gradient-burn {
+    @apply bg-gradient-to-r from-burn-400 to-orange-400 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-secure {
+    @apply bg-gradient-to-r from-secure-400 to-emerald-400 bg-clip-text text-transparent;
+  }
+
+  /* Scrollbar Styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-slate-900/50 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 rounded-full hover:bg-slate-600;
+  }
+}
