@@ -1,10 +1,11 @@
 /**
  * Layout Component
- * Main application shell with sidebar navigation
+ * Premium application shell with sidebar navigation
+ * Enterprise-grade design for $100K+/month clients
  */
 
 import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -16,15 +17,20 @@ import {
   Flame,
   Zap,
   ExternalLink,
+  Activity,
+  Users,
+  Bot,
+  ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
   {
-    label: 'Dashboard',
+    label: 'Command Center',
     href: '/',
-    icon: LayoutDashboard,
-    description: 'Real-time burn metrics',
+    icon: Activity,
+    description: 'AI-powered dashboard',
+    badge: 'LIVE',
   },
   {
     label: 'Scope Shield',
@@ -36,7 +42,7 @@ const NAV_ITEMS = [
     label: 'Leakage Analysis',
     href: '/leakage',
     icon: BarChart3,
-    description: 'Where money goes to die',
+    description: 'Deep margin insights',
   },
   {
     label: 'Settings',
@@ -48,26 +54,29 @@ const NAV_ITEMS = [
 
 export function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex bg-slate-950">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-slate-900/80 border-r border-slate-800/50 backdrop-blur-sm">
+      <aside className="hidden lg:flex flex-col w-72 bg-gradient-to-b from-slate-900/95 via-slate-900/90 to-slate-950/95 border-r border-slate-800/30 backdrop-blur-xl">
         <Logo />
         <Navigation />
         <IntegrationStatus />
       </aside>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800/50">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-slate-900/98 backdrop-blur-xl border-b border-slate-800/30">
         <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-2">
-            <Flame className="w-6 h-6 text-burn-500" />
-            <span className="font-display font-bold text-white">MarginDefense</span>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-purple-700 flex items-center justify-center shadow-lg shadow-violet-500/20">
+              <Flame className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-white text-lg tracking-tight">MarginDefense</span>
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-slate-400 hover:text-white"
+            className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -81,9 +90,10 @@ export function Layout() {
             initial={{ opacity: 0, x: -300 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -300 }}
-            className="lg:hidden fixed inset-0 z-40 bg-slate-900/98 backdrop-blur-md pt-16"
+            transition={{ type: 'spring', damping: 25 }}
+            className="lg:hidden fixed inset-0 z-40 bg-slate-950/98 backdrop-blur-xl pt-20"
           >
-            <nav className="p-4 space-y-2">
+            <nav className="p-5 space-y-2">
               {NAV_ITEMS.map((item) => (
                 <NavLink
                   key={item.href}
@@ -91,18 +101,26 @@ export function Layout() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors',
+                      'flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300',
                       isActive
-                        ? 'bg-burn-950/50 text-white border-l-2 border-burn-500'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                        ? 'bg-gradient-to-r from-violet-600/20 to-purple-600/10 text-white border-l-3 border-violet-500 shadow-lg shadow-violet-500/5'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
                     )
                   }
                 >
                   <item.icon className="w-5 h-5" />
-                  <div>
-                    <span className="block font-medium">{item.label}</span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">{item.label}</span>
+                      {item.badge && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/20">
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-xs text-slate-500">{item.description}</span>
                   </div>
+                  <ChevronRight className="w-4 h-4 text-slate-600" />
                 </NavLink>
               ))}
             </nav>
@@ -111,8 +129,8 @@ export function Layout() {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-0 pt-16 lg:pt-0">
-        <div className="p-4 lg:p-8 max-w-7xl mx-auto">
+      <main className="flex-1 lg:ml-0 pt-16 lg:pt-0 overflow-x-hidden">
+        <div className="p-5 lg:p-8 max-w-[1800px] mx-auto">
           <Outlet />
         </div>
       </main>
@@ -122,28 +140,28 @@ export function Layout() {
 
 function Logo() {
   return (
-    <div className="p-6 border-b border-slate-800/50">
-      <div className="flex items-center gap-3">
+    <div className="p-6 border-b border-slate-800/30">
+      <div className="flex items-center gap-4">
         <div className="relative">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-burn-600 to-burn-700 flex items-center justify-center">
-            <Flame className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-700 flex items-center justify-center shadow-xl shadow-violet-500/20">
+            <Flame className="w-7 h-7 text-white" />
           </div>
           <motion.div
-            className="absolute inset-0 rounded-xl bg-burn-500/30"
+            className="absolute inset-0 rounded-2xl bg-violet-500/30"
             animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 0, 0.5],
+              scale: [1, 1.15, 1],
+              opacity: [0.4, 0, 0.4],
             }}
             transition={{
-              duration: 2,
+              duration: 3,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
           />
         </div>
         <div>
-          <h1 className="font-display font-bold text-white text-lg">MarginDefense</h1>
-          <p className="text-xs text-slate-500">Revenue Protection System</p>
+          <h1 className="font-bold text-white text-xl tracking-tight">MarginDefense</h1>
+          <p className="text-xs text-slate-500 mt-0.5">AI Revenue Protection</p>
         </div>
       </div>
     </div>
@@ -152,20 +170,49 @@ function Logo() {
 
 function Navigation() {
   return (
-    <nav className="flex-1 p-4 space-y-1">
-      {NAV_ITEMS.map((item) => (
+    <nav className="flex-1 p-4 space-y-1.5">
+      <p className="px-4 py-2 text-[10px] font-semibold text-slate-600 uppercase tracking-widest">
+        Navigation
+      </p>
+      {NAV_ITEMS.map((item, index) => (
         <NavLink
           key={item.href}
           to={item.href}
           className={({ isActive }) =>
             cn(
-              'nav-item',
-              isActive && 'active'
+              'group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300',
+              isActive
+                ? 'bg-gradient-to-r from-violet-600/20 to-purple-600/10 text-white border-l-[3px] border-violet-500'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
             )
           }
         >
-          <item.icon className="w-5 h-5" />
-          <span>{item.label}</span>
+          {({ isActive }) => (
+            <>
+              <div className={cn(
+                'p-2 rounded-lg transition-colors',
+                isActive ? 'bg-violet-500/20' : 'bg-slate-800/30 group-hover:bg-slate-700/30'
+              )}>
+                <item.icon className={cn('w-4 h-4', isActive ? 'text-violet-400' : '')} />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-sm">{item.label}</span>
+                  {item.badge && (
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/20">
+                      {item.badge}
+                    </span>
+                  )}
+                </div>
+              </div>
+              {isActive && (
+                <motion.div
+                  layoutId="nav-indicator"
+                  className="w-1.5 h-1.5 rounded-full bg-violet-400"
+                />
+              )}
+            </>
+          )}
         </NavLink>
       ))}
     </nav>
@@ -174,34 +221,44 @@ function Navigation() {
 
 function IntegrationStatus() {
   return (
-    <div className="p-4 border-t border-slate-800/50">
-      <div className="glass-panel p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Zap className="w-4 h-4 text-yellow-500" />
-          <span className="text-sm font-medium text-white">Integrations</span>
+    <div className="p-4 border-t border-slate-800/30">
+      <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-800/50 via-slate-900/80 to-slate-950/90 border border-slate-700/30">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+            <Zap className="w-4 h-4 text-amber-400" />
+          </div>
+          <span className="text-sm font-semibold text-white">System Status</span>
         </div>
-        <div className="space-y-2 text-xs">
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-slate-500">Data Source</span>
-            <span className="text-yellow-400">Manual Entry</span>
+            <span className="text-xs text-slate-500">Data Source</span>
+            <span className="text-xs font-medium text-amber-400">Manual Entry</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-slate-500">Status</span>
-            <span className="flex items-center gap-1 text-secure-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-secure-500 animate-pulse" />
+            <span className="text-xs text-slate-500">AI Agents</span>
+            <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-400">
+              <motion.span 
+                className="w-1.5 h-1.5 rounded-full bg-emerald-500"
+                animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              />
               Active
             </span>
           </div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-slate-500">Protection</span>
+            <span className="text-xs font-medium text-violet-400">Enabled</span>
+          </div>
         </div>
-        <button className="w-full mt-3 py-2 text-xs text-slate-400 hover:text-white border border-slate-700/50 rounded-lg hover:bg-slate-800/50 transition-colors flex items-center justify-center gap-1">
-          <ExternalLink className="w-3 h-3" />
-          Connect CRM
+        <button className="w-full mt-4 py-2.5 text-xs font-medium text-slate-400 hover:text-white border border-slate-700/50 rounded-xl hover:bg-slate-800/50 transition-all duration-300 flex items-center justify-center gap-2">
+          <ExternalLink className="w-3.5 h-3.5" />
+          Connect Integrations
         </button>
       </div>
       
       {/* Version */}
       <p className="text-center text-[10px] text-slate-600 mt-4">
-        v0.1.0 MVP • Built by TORQOS
+        v2.0.0 • Enterprise Edition
       </p>
     </div>
   );

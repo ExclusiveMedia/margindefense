@@ -736,6 +736,334 @@ class MockDataStore {
       }));
   }
 
+  // ============================================
+  // V2 FEATURES - Command Center & Agents
+  // ============================================
+
+  getCommandCenterMetrics(periodDays = 7): {
+    billable_ratio: number;
+    billable_ratio_trend: 'up' | 'down' | 'stable';
+    at_risk_revenue: number;
+    ai_hours_saved: number;
+    efficiency_score: number;
+    revenue_secure_delta: number;
+    margin_burn_delta: number;
+    active_alerts: number;
+    critical_alerts: number;
+    healthy_clients: number;
+    at_risk_clients: number;
+    total_clients: number;
+  } {
+    const metrics = this.getMetrics(periodDays);
+    const prevMetrics = this.getMetrics(periodDays * 2);
+    
+    const billable_ratio = metrics.total_revenue_secure / 
+      (metrics.total_revenue_secure + metrics.total_margin_burn) * 100 || 0;
+    
+    const prevBillableRatio = prevMetrics.total_revenue_secure / 
+      (prevMetrics.total_revenue_secure + prevMetrics.total_margin_burn) * 100 || 0;
+    
+    // Calculate at-risk revenue from underwater projects + pending scope
+    const underwaterProjects = this.projects.filter(p => p.margin_health === 'underwater' || p.margin_health === 'critical');
+    const projectAtRisk = underwaterProjects.reduce((sum, p) => sum + Math.max(0, p.current_spend - p.total_budget), 0);
+    const at_risk_revenue = projectAtRisk + metrics.scope_requests_value;
+    
+    // Simulated AI hours saved (in real app, track from classification automation)
+    const ai_hours_saved = Math.round(this.workLogs.length * 0.15 * 10) / 10; // ~0.15 hours per log
+    
+    // Efficiency score (billable ratio weighted heavily)
+    const efficiency_score = Math.min(100, Math.round(billable_ratio * 1.2));
+    
+    // Client health analysis
+    const clientHealth = this.getClientHealthMetrics();
+    const healthy_clients = clientHealth.filter(c => c.health === 'excellent' || c.health === 'good').length;
+    const at_risk_clients = clientHealth.filter(c => c.health === 'warning' || c.health === 'critical').length;
+    
+    // Alerts
+    const alerts = this.getMarginAlerts();
+    
+    return {
+      billable_ratio,
+      billable_ratio_trend: billable_ratio > prevBillableRatio + 2 ? 'up' : 
+                           billable_ratio < prevBillableRatio - 2 ? 'down' : 'stable',
+      at_risk_revenue,
+      ai_hours_saved,
+      efficiency_score,
+      revenue_secure_delta: metrics.total_revenue_secure - (prevMetrics.total_revenue_secure / 2),
+      margin_burn_delta: metrics.total_margin_burn - (prevMetrics.total_margin_burn / 2),
+      active_alerts: alerts.filter(a => !a.resolved_at).length,
+      critical_alerts: alerts.filter(a => a.severity === 'critical' || a.severity === 'emergency').length,
+      healthy_clients,
+      at_risk_clients,
+      total_clients: this.clients.length,
+    };
+  }
+
+  getClientHealthMetrics(): Array<{
+    client_id: string;
+    client_name: string;
+    health: 'excellent' | 'good' | 'warning' | 'critical';
+    sentiment: 'happy' | 'neutral' | 'concerned' | 'at_risk';
+    total_revenue: number;
+    total_burn: number;
+    margin_percentage: number;
+    retainer_utilization: number | null;
+    pending_scope_requests: number;
+    risk_score: number;
+    margin_trend: 'improving' | 'stable' | 'declining';
+  }> {
+    return this.clients.map(client => {
+      const clientLogs = this.workLogs.filter(l => l.client_id === client.id);
+      const billableLogs = clientLogs.filter(l => l.category === 'billable');
+      const burnLogs = clientLogs.filter(l => l.category === 'margin_burn' || l.category === 'scope_risk');
+      
+      const total_revenue = billableLogs.reduce((sum, l) => sum + l.cost_impact, 0);
+      const total_burn = burnLogs.reduce((sum, l) => sum + l.cost_impact, 0);
+      const total = total_revenue + total_burn;
+      const margin_percentage = total > 0 ? (total_revenue / total) * 100 : 100;
+      
+      const retainer_utilization = client.retainer_value 
+        ? Math.min(100, (total / client.retainer_value) * 100) 
+        : null;
+      
+      const pending_scope_requests = this.scopeRequests.filter(
+        r => r.client_id === client.id && r.status === 'pending'
+      ).length;
+      
+      // Risk score calculation
+      let risk_score = 0;
+      if (margin_percentage < 60) risk_score += 30;
+      else if (margin_percentage < 75) risk_score += 15;
+      if (pending_scope_requests > 2) risk_score += 25;
+      else if (pending_scope_requests > 0) risk_score += 10;
+      if (total_burn > total_revenue) risk_score += 30;
+      if (retainer_utilization && retainer_utilization > 90) risk_score += 15;
+      
+      // Health determination
+      let health: 'excellent' | 'good' | 'warning' | 'critical' = 'excellent';
+      if (risk_score >= 50) health = 'critical';
+      else if (risk_score >= 30) health = 'warning';
+      else if (risk_score >= 15) health = 'good';
+      
+      // Sentiment (simulated - would come from communication analysis)
+      let sentiment: 'happy' | 'neutral' | 'concerned' | 'at_risk' = 'neutral';
+      if (health === 'excellent' && pending_scope_requests === 0) sentiment = 'happy';
+      else if (health === 'critical') sentiment = 'at_risk';
+      else if (pending_scope_requests > 1) sentiment = 'concerned';
+      
+      return {
+        client_id: client.id,
+        client_name: client.name,
+        health,
+        sentiment,
+        total_revenue,
+        total_burn,
+        margin_percentage,
+        retainer_utilization,
+        pending_scope_requests,
+        risk_score,
+        margin_trend: margin_percentage > 70 ? 'improving' : margin_percentage > 50 ? 'stable' : 'declining',
+      };
+    });
+  }
+
+  getMarginAlerts(): Array<{
+    id: string;
+    type: string;
+    severity: 'info' | 'warning' | 'critical' | 'emergency';
+    title: string;
+    description: string;
+    impact_amount: number;
+    client_id?: string;
+    project_id?: string;
+    created_at: string;
+    resolved_at?: string;
+    suggested_action?: string;
+  }> {
+    const alerts: Array<{
+      id: string;
+      type: string;
+      severity: 'info' | 'warning' | 'critical' | 'emergency';
+      title: string;
+      description: string;
+      impact_amount: number;
+      client_id?: string;
+      project_id?: string;
+      created_at: string;
+      resolved_at?: string;
+      suggested_action?: string;
+    }> = [];
+    
+    // Check for underwater projects
+    for (const project of this.projects) {
+      if (project.margin_health === 'underwater') {
+        const overrun = project.current_spend - project.total_budget;
+        alerts.push({
+          id: `alert-project-${project.id}`,
+          type: 'project_overrun',
+          severity: 'critical',
+          title: `${project.name} is ${Math.round((project.current_spend / project.total_budget) * 100)}% of budget`,
+          description: `Project has exceeded budget by $${overrun.toLocaleString()}`,
+          impact_amount: overrun,
+          project_id: project.id,
+          client_id: project.client_id,
+          created_at: new Date().toISOString(),
+          suggested_action: 'Review scope and renegotiate with client',
+        });
+      } else if (project.margin_health === 'warning') {
+        alerts.push({
+          id: `alert-warning-${project.id}`,
+          type: 'margin_threshold',
+          severity: 'warning',
+          title: `${project.name} approaching budget limit`,
+          description: `Project is at ${Math.round((project.current_spend / project.total_budget) * 100)}% of budget`,
+          impact_amount: project.total_budget - project.current_spend,
+          project_id: project.id,
+          client_id: project.client_id,
+          created_at: new Date().toISOString(),
+          suggested_action: 'Monitor closely and plan remaining work',
+        });
+      }
+    }
+    
+    // Check for clients with multiple scope requests
+    const scopeByClient = new Map<string, number>();
+    for (const req of this.scopeRequests.filter(r => r.status === 'pending')) {
+      if (req.client_id) {
+        scopeByClient.set(req.client_id, (scopeByClient.get(req.client_id) || 0) + 1);
+      }
+    }
+    
+    for (const [clientId, count] of scopeByClient.entries()) {
+      if (count >= 2) {
+        const client = this.getClient(clientId);
+        const totalValue = this.scopeRequests
+          .filter(r => r.client_id === clientId && r.status === 'pending')
+          .reduce((sum, r) => sum + (r.estimated_cost || 0), 0);
+        
+        alerts.push({
+          id: `alert-scope-${clientId}`,
+          type: 'scope_creep_pattern',
+          severity: count >= 3 ? 'critical' : 'warning',
+          title: `${client?.name}: ${count} pending scope requests`,
+          description: `Total at-risk value: $${totalValue.toLocaleString()}`,
+          impact_amount: totalValue,
+          client_id: clientId,
+          created_at: new Date().toISOString(),
+          suggested_action: 'Schedule scope review meeting with client',
+        });
+      }
+    }
+    
+    // Check billable ratio
+    const metrics = this.getMetrics(7);
+    if (metrics.burn_ratio > 40) {
+      alerts.push({
+        id: 'alert-efficiency',
+        type: 'efficiency_drop',
+        severity: metrics.burn_ratio > 50 ? 'critical' : 'warning',
+        title: `Billable ratio dropped to ${Math.round(100 - metrics.burn_ratio)}%`,
+        description: 'Non-billable work is consuming too much capacity',
+        impact_amount: metrics.total_margin_burn,
+        created_at: new Date().toISOString(),
+        suggested_action: 'Audit recent work logs and reduce overhead',
+      });
+    }
+    
+    return alerts.sort((a, b) => {
+      const severityOrder = { emergency: 0, critical: 1, warning: 2, info: 3 };
+      return severityOrder[a.severity] - severityOrder[b.severity];
+    });
+  }
+
+  getAgentStatuses(): Array<{
+    id: string;
+    name: string;
+    type: string;
+    status: 'active' | 'paused' | 'error';
+    last_run: string;
+    alerts_generated: number;
+    actions_taken: number;
+    efficiency_score: number;
+  }> {
+    // Simulated agent statuses for demo
+    return [
+      {
+        id: 'agent-margin',
+        name: 'Margin Defender',
+        type: 'margin_defender',
+        status: 'active',
+        last_run: new Date().toISOString(),
+        alerts_generated: this.getMarginAlerts().length,
+        actions_taken: 12,
+        efficiency_score: 87,
+      },
+      {
+        id: 'agent-intake',
+        name: 'Intake Classifier',
+        type: 'intake_classifier',
+        status: 'active',
+        last_run: new Date().toISOString(),
+        alerts_generated: 0,
+        actions_taken: this.workLogs.length,
+        efficiency_score: 94,
+      },
+      {
+        id: 'agent-scope',
+        name: 'Scope Sentinel',
+        type: 'scope_sentinel',
+        status: 'active',
+        last_run: new Date().toISOString(),
+        alerts_generated: this.scopeRequests.filter(r => r.status === 'pending').length,
+        actions_taken: 8,
+        efficiency_score: 91,
+      },
+    ];
+  }
+
+  getTrendData(days = 7): Array<{
+    date: string;
+    revenue_secure: number;
+    margin_burn: number;
+    billable_ratio: number;
+  }> {
+    const data: Array<{
+      date: string;
+      revenue_secure: number;
+      margin_burn: number;
+      billable_ratio: number;
+    }> = [];
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      
+      const dayLogs = this.workLogs.filter(l => 
+        l.created_at.startsWith(dateStr)
+      );
+      
+      const revenue_secure = dayLogs
+        .filter(l => l.category === 'billable')
+        .reduce((sum, l) => sum + l.cost_impact, 0);
+      
+      const margin_burn = dayLogs
+        .filter(l => l.category === 'margin_burn' || l.category === 'scope_risk')
+        .reduce((sum, l) => sum + l.cost_impact, 0);
+      
+      const total = revenue_secure + margin_burn;
+      
+      data.push({
+        date: dateStr,
+        revenue_secure,
+        margin_burn,
+        billable_ratio: total > 0 ? (revenue_secure / total) * 100 : 100,
+      });
+    }
+    
+    return data;
+  }
+
   // Reset to demo data
   reset(): void {
     this.organization = { ...DEMO_ORG };

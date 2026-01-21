@@ -1,4 +1,244 @@
-# MarginDefense.ai
+# MarginDefense.ai V2 — Command Center
+
+<div align="center">
+
+![MarginDefense](https://img.shields.io/badge/MarginDefense-AI%20Operating%20System-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.0.0-green?style=for-the-badge)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=for-the-badge)
+![React](https://img.shields.io/badge/React-18-blue?style=for-the-badge)
+
+**The AI Operating System for Business Profitability**
+
+*Enterprise-grade margin protection for service businesses generating $100K+/month*
+
+</div>
+
+---
+
+## 🎯 What is MarginDefense?
+
+MarginDefense.ai is an AI-powered operating system that measures, optimizes, and governs human + AI labor based on **economic value**. It's the CFO-in-a-box that turns every hour of work into a visible ROI decision.
+
+### Core Philosophy
+- **Profit First**: Margin protection over raw output
+- **Work Classification**: Billable vs Busy Work separation  
+- **Client Experience**: Real-time clarity without endless meetings
+- **Automation-First**: Manual data entry = design failure
+
+---
+
+## ✨ V2 Features — Command Center
+
+### 📊 Executive Dashboard
+- **Billable Ratio KPI** with trend analysis and 65% threshold alerts
+- **At-Risk Revenue** tracking from scope creep and project overruns
+- **AI Hours Saved** showing automation value
+- **Efficiency Score** with letter grades (A+ to F)
+- **Client Health Overview** at a glance
+
+### 👥 Client Health Monitoring
+- Per-client margin percentage visualization
+- Sentiment indicators (Happy → At Risk)
+- Retainer utilization tracking
+- Risk scoring with priority sorting
+- One-click "Optimize Now" actions
+
+### 🤖 AI Agents
+- **Margin Defender**: Real-time margin threshold monitoring
+- **Intake Classifier**: Automatic work categorization
+- **Scope Sentinel**: Scope creep pattern detection
+- Agent status dashboard with efficiency scores
+- Pause/Resume/Reset controls
+
+### 🚨 Margin Alerts
+- Real-time alert feed with severity levels
+- Critical/Emergency alert prioritization
+- AI-suggested actions for each alert
+- Impact amount calculations
+- One-click acknowledgment
+
+### 🔥 The Incinerator (Work Feed)
+- Live work log classification
+- Billable vs Burn visual separation
+- Manual reclassification with instant feedback
+- Cost impact calculations
+
+### 🛡️ Scope Shield
+- Pending scope request inbox
+- Convert/Reject/Accept Burn actions
+- Risk value aggregation
+- Client attribution
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+---
+
+## 🏗️ Architecture
+
+```
+src/
+├── components/
+│   ├── command-center/     # V2 KPI cards, client health
+│   │   ├── KPICards.tsx
+│   │   └── ClientMarginCards.tsx
+│   ├── agents/             # AI agent monitoring
+│   │   ├── AlertsPanel.tsx
+│   │   └── AgentStatusPanel.tsx
+│   ├── dashboard/          # Core dashboard components
+│   ├── layout/             # App shell
+│   ├── leakage/            # Burn analysis
+│   └── scope-shield/       # Scope request management
+├── hooks/
+│   ├── useData.ts          # Data hooks
+│   └── useCommandCenter.ts # V2 hooks
+├── lib/
+│   ├── classifier.ts       # Work classification engine
+│   ├── store.ts            # Mock data store
+│   └── utils.ts            # Utilities
+├── pages/
+│   ├── DashboardPage.tsx   # Command Center
+│   ├── LeakagePage.tsx     # Burn analysis
+│   ├── ScopeShieldPage.tsx # Scope requests
+│   └── SettingsPage.tsx    # Configuration
+├── types/                  # TypeScript definitions
+└── integrations/
+    └── supabase/           # Database integration
+```
+
+---
+
+## 🎨 Design System
+
+### Premium Enterprise Aesthetics
+- **Dark mode optimized** for extended executive use
+- **Glass morphism** with subtle gradients
+- **Framer Motion** animations throughout
+- **JetBrains Mono** for financial data
+- **Space Grotesk** for headings
+- **Color-coded severity** (Green → Amber → Rose)
+
+### Key Visual Elements
+- Glow effects on critical metrics
+- Animated progress bars
+- Live pulse indicators
+- Hover micro-interactions
+- Premium card shadows
+
+---
+
+## 📦 Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | React 18 + TypeScript |
+| Styling | Tailwind CSS 4.0 |
+| Animations | Framer Motion |
+| Routing | React Router 7 |
+| State | React Hooks + Zustand |
+| Database | Supabase (PostgreSQL) |
+| Build | Vite 7 |
+| Icons | Lucide React |
+
+---
+
+## 🔐 Database Schema
+
+```sql
+-- Core tables
+organizations     -- Company settings
+clients          -- Client profiles
+projects         -- Project tracking
+work_logs        -- Time/work entries
+scope_requests   -- Scope creep inbox
+
+-- V2 tables (planned)
+margin_alerts    -- Real-time alerts
+agent_logs       -- AI agent activity
+client_health    -- Health snapshots
+```
+
+---
+
+## 🌐 Deployment
+
+### Vercel (Recommended)
+```bash
+npm run build
+# Deploy dist/ folder
+```
+
+### Netlify
+```bash
+npm run build
+# Deploy dist/ folder with _redirects
+```
+
+### Docker
+```dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY . .
+RUN npm ci && npm run build
+CMD ["npm", "run", "preview"]
+```
+
+---
+
+## 🔮 Roadmap
+
+### Phase 1 ✅ Complete
+- [x] Core dashboard with burn metrics
+- [x] Work classification engine
+- [x] Scope Shield
+- [x] Command Center V2
+- [x] Client Health cards
+- [x] AI Agent monitoring
+- [x] Margin Alerts
+
+### Phase 2 — Coming Soon
+- [ ] LLM-powered classification
+- [ ] Slack/Teams integration
+- [ ] CSV import (Toggl, Harvest)
+- [ ] Client portal (external view)
+- [ ] Benchmark data
+
+### Phase 3 — Future
+- [ ] Work verification layer
+- [ ] Data cooperative
+- [ ] Tokenization system
+- [ ] Ghost Mode (zero-UI)
+
+---
+
+## 📄 License
+
+Proprietary. All rights reserved.
+
+---
+
+<div align="center">
+
+**Built for agencies and service businesses who refuse to watch their margins burn.**
+
+[Get Started](/) • [Documentation](#) • [Support](#)
+
+</div>
 
 **Revenue Defense Platform** — The Automated CFO that protects your profit margins.
 
