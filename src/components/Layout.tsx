@@ -23,6 +23,8 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const NAV_ITEMS = [
   {
@@ -55,31 +57,35 @@ const NAV_ITEMS = [
 export function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { theme } = useTheme();
 
   return (
-    <div className="min-h-screen flex bg-slate-950">
+    <div className="min-h-screen flex bg-[hsl(var(--md-bg-primary))]">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-72 bg-gradient-to-b from-slate-900/95 via-slate-900/90 to-slate-950/95 border-r border-slate-800/30 backdrop-blur-xl">
+      <aside className="hidden lg:flex flex-col w-72 bg-[hsl(var(--md-bg-secondary))] border-r border-[hsl(var(--md-border-subtle))]">
         <Logo />
         <Navigation />
         <IntegrationStatus />
       </aside>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-slate-900/98 backdrop-blur-xl border-b border-slate-800/30">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--md-bg-secondary))] border-b border-[hsl(var(--md-border-subtle))]">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-purple-700 flex items-center justify-center shadow-lg shadow-violet-500/20">
               <Flame className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-white text-lg tracking-tight">MarginDefense</span>
+            <span className="font-bold text-[hsl(var(--md-text-emphasis))] text-lg tracking-tight">MarginDefense</span>
           </div>
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors"
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2.5 rounded-xl text-[hsl(var(--md-text-secondary))] hover:text-[hsl(var(--md-text-emphasis))] hover:bg-[hsl(var(--md-bg-hover))] transition-colors"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -91,7 +97,7 @@ export function Layout() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -300 }}
             transition={{ type: 'spring', damping: 25 }}
-            className="lg:hidden fixed inset-0 z-40 bg-slate-950/98 backdrop-blur-xl pt-20"
+            className="lg:hidden fixed inset-0 z-40 bg-[hsl(var(--md-bg-primary))] pt-20"
           >
             <nav className="p-5 space-y-2">
               {NAV_ITEMS.map((item) => (
@@ -103,8 +109,8 @@ export function Layout() {
                     cn(
                       'flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300',
                       isActive
-                        ? 'bg-gradient-to-r from-violet-600/20 to-purple-600/10 text-white border-l-3 border-violet-500 shadow-lg shadow-violet-500/5'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
+                        ? 'bg-gradient-to-r from-violet-600/20 to-purple-600/10 text-[hsl(var(--md-text-emphasis))] border-l-3 border-violet-500'
+                        : 'text-[hsl(var(--md-text-secondary))] hover:text-[hsl(var(--md-text-emphasis))] hover:bg-[hsl(var(--md-bg-hover))]'
                     )
                   }
                 >
@@ -118,9 +124,9 @@ export function Layout() {
                         </span>
                       )}
                     </div>
-                    <span className="text-xs text-slate-500">{item.description}</span>
+                    <span className="text-xs text-[hsl(var(--md-text-muted))]">{item.description}</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-600" />
+                  <ChevronRight className="w-4 h-4 text-[hsl(var(--md-text-muted))]" />
                 </NavLink>
               ))}
             </nav>
@@ -140,7 +146,7 @@ export function Layout() {
 
 function Logo() {
   return (
-    <div className="p-6 border-b border-slate-800/30">
+    <div className="p-6 border-b border-[hsl(var(--md-border-subtle))]">
       <div className="flex items-center gap-4">
         <div className="relative">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-700 flex items-center justify-center shadow-xl shadow-violet-500/20">
@@ -160,8 +166,8 @@ function Logo() {
           />
         </div>
         <div>
-          <h1 className="font-bold text-white text-xl tracking-tight">MarginDefense</h1>
-          <p className="text-xs text-slate-500 mt-0.5">AI Revenue Protection</p>
+          <h1 className="font-bold text-[hsl(var(--md-text-emphasis))] text-xl tracking-tight">MarginDefense</h1>
+          <p className="text-xs text-[hsl(var(--md-text-muted))] mt-0.5">AI Revenue Protection</p>
         </div>
       </div>
     </div>
@@ -171,7 +177,7 @@ function Logo() {
 function Navigation() {
   return (
     <nav className="flex-1 p-4 space-y-1.5">
-      <p className="px-4 py-2 text-[10px] font-semibold text-slate-600 uppercase tracking-widest">
+      <p className="px-4 py-2 text-[10px] font-semibold text-[hsl(var(--md-text-muted))] uppercase tracking-widest">
         Navigation
       </p>
       {NAV_ITEMS.map((item, index) => (
@@ -182,8 +188,8 @@ function Navigation() {
             cn(
               'group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300',
               isActive
-                ? 'bg-gradient-to-r from-violet-600/20 to-purple-600/10 text-white border-l-[3px] border-violet-500'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/30'
+                ? 'bg-gradient-to-r from-violet-600/20 to-purple-600/10 text-[hsl(var(--md-text-emphasis))] border-l-[3px] border-violet-500'
+                : 'text-[hsl(var(--md-text-secondary))] hover:text-[hsl(var(--md-text-emphasis))] hover:bg-[hsl(var(--md-bg-hover))]'
             )
           }
         >
@@ -191,7 +197,7 @@ function Navigation() {
             <>
               <div className={cn(
                 'p-2 rounded-lg transition-colors',
-                isActive ? 'bg-violet-500/20' : 'bg-slate-800/30 group-hover:bg-slate-700/30'
+                isActive ? 'bg-violet-500/20' : 'bg-[hsl(var(--md-bg-elevated))] group-hover:bg-[hsl(var(--md-bg-hover))]'
               )}>
                 <item.icon className={cn('w-4 h-4', isActive ? 'text-violet-400' : '')} />
               </div>
@@ -221,21 +227,27 @@ function Navigation() {
 
 function IntegrationStatus() {
   return (
-    <div className="p-4 border-t border-slate-800/30">
-      <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-800/50 via-slate-900/80 to-slate-950/90 border border-slate-700/30">
+    <div className="p-4 border-t border-[hsl(var(--md-border-subtle))]">
+      {/* Theme Toggle */}
+      <div className="flex items-center justify-between mb-4 px-2">
+        <span className="text-xs font-medium text-[hsl(var(--md-text-muted))]">Appearance</span>
+        <ThemeToggle />
+      </div>
+      
+      <div className="p-4 rounded-2xl bg-[hsl(var(--md-bg-elevated))] border border-[hsl(var(--md-border-subtle))]">
         <div className="flex items-center gap-2 mb-4">
           <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
             <Zap className="w-4 h-4 text-amber-400" />
           </div>
-          <span className="text-sm font-semibold text-white">System Status</span>
+          <span className="text-sm font-semibold text-[hsl(var(--md-text-emphasis))]">System Status</span>
         </div>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-500">Data Source</span>
+            <span className="text-xs text-[hsl(var(--md-text-muted))]">Data Source</span>
             <span className="text-xs font-medium text-amber-400">Manual Entry</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-500">AI Agents</span>
+            <span className="text-xs text-[hsl(var(--md-text-muted))]">AI Agents</span>
             <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-400">
               <motion.span 
                 className="w-1.5 h-1.5 rounded-full bg-emerald-500"
@@ -246,19 +258,19 @@ function IntegrationStatus() {
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-500">Protection</span>
+            <span className="text-xs text-[hsl(var(--md-text-muted))]">Protection</span>
             <span className="text-xs font-medium text-violet-400">Enabled</span>
           </div>
         </div>
-        <button className="w-full mt-4 py-2.5 text-xs font-medium text-slate-400 hover:text-white border border-slate-700/50 rounded-xl hover:bg-slate-800/50 transition-all duration-300 flex items-center justify-center gap-2">
+        <button className="w-full mt-4 py-2.5 text-xs font-medium text-[hsl(var(--md-text-secondary))] hover:text-[hsl(var(--md-text-emphasis))] border border-[hsl(var(--md-border-medium))] rounded-xl hover:bg-[hsl(var(--md-bg-hover))] transition-all duration-300 flex items-center justify-center gap-2">
           <ExternalLink className="w-3.5 h-3.5" />
           Connect Integrations
         </button>
       </div>
       
       {/* Version */}
-      <p className="text-center text-[10px] text-slate-600 mt-4">
-        v2.0.0 • Enterprise Edition
+      <p className="text-center text-[10px] text-[hsl(var(--md-text-muted))] mt-4">
+        v3.0.0 • Enterprise Edition
       </p>
     </div>
   );

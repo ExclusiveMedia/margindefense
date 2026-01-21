@@ -1,0 +1,611 @@
+/**
+ * MarginDefense Premium Design System
+ * Enterprise-grade for $100K+/month clients
+ * Bloomberg density + Stripe polish + proprietary brand
+ */
+
+/* Distinctive Typography - NOT the usual suspects */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* MarginDefense Brand Colors - Proprietary Palette */
+    --md-void: 228 25% 4%;           /* Near-black with blue undertone */
+    --md-obsidian: 225 20% 7%;       /* Card backgrounds */
+    --md-graphite: 224 18% 12%;      /* Elevated surfaces */
+    --md-steel: 220 13% 18%;         /* Borders, dividers */
+    --md-slate: 218 11% 35%;         /* Muted text */
+    --md-silver: 220 9% 65%;         /* Secondary text */
+    --md-chrome: 220 8% 85%;         /* Primary text */
+    --md-white: 0 0% 98%;            /* Emphasis text */
+    
+    /* Semantic Colors */
+    --md-secure: 158 64% 45%;        /* Billable/Revenue - Teal */
+    --md-secure-dim: 158 50% 25%;
+    --md-burn: 4 90% 58%;            /* Margin burn - Vermillion */
+    --md-burn-dim: 4 70% 30%;
+    --md-alert: 38 92% 50%;          /* Warning - Amber */
+    --md-alert-dim: 38 70% 28%;
+    --md-info: 217 91% 60%;          /* Info - Electric blue */
+    --md-info-dim: 217 70% 30%;
+    
+    /* Premium Accents */
+    --md-gold: 43 96% 56%;           /* Premium highlights */
+    --md-platinum: 220 15% 75%;      /* Subtle shine */
+    --md-electric: 250 95% 65%;      /* AI/Automation accent */
+    
+    /* Glow Colors */
+    --glow-secure: 158 64% 45%;
+    --glow-burn: 4 90% 58%;
+    --glow-alert: 38 92% 50%;
+    --glow-info: 217 91% 60%;
+  }
+
+  * {
+    @apply border-[hsl(var(--md-steel))];
+  }
+
+  body {
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    background: hsl(var(--md-void));
+    color: hsl(var(--md-chrome));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Proprietary Background - Subtle grid + gradient */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      /* Subtle noise texture */
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E"),
+      /* Premium gradient */
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsla(217, 91%, 60%, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsla(158, 64%, 45%, 0.06) 0%, transparent 40%),
+      radial-gradient(ellipse 50% 30% at 0% 80%, hsla(4, 90%, 58%, 0.04) 0%, transparent 40%),
+      hsl(var(--md-void));
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Typography Hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: hsl(var(--md-white));
+  }
+
+  /* Monospace for data */
+  .font-data {
+    font-family: 'IBM Plex Mono', 'SF Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  /* Selection */
+  ::selection {
+    background: hsla(217, 91%, 60%, 0.3);
+    color: hsl(var(--md-white));
+  }
+}
+
+@layer components {
+  /* ============================================
+     THE HERO NUMBER - Most important metric
+     ============================================ */
+  .hero-metric {
+    @apply relative;
+  }
+
+  .hero-metric__value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: clamp(3rem, 8vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--md-white)) 0%,
+      hsl(var(--md-platinum)) 50%,
+      hsl(var(--md-white)) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 80px hsla(var(--md-info), 0.3);
+  }
+
+  .hero-metric__value--burn {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--md-burn)) 0%,
+      hsl(38, 100%, 60%) 50%,
+      hsl(var(--md-burn)) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    text-shadow: 0 0 80px hsla(var(--md-burn), 0.4);
+  }
+
+  .hero-metric__value--secure {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--md-secure)) 0%,
+      hsl(170, 80%, 60%) 50%,
+      hsl(var(--md-secure)) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    text-shadow: 0 0 80px hsla(var(--md-secure), 0.4);
+  }
+
+  /* ============================================
+     DATA CARDS - Bloomberg density
+     ============================================ */
+  .data-card {
+    @apply relative overflow-hidden;
+    background: linear-gradient(
+      145deg,
+      hsla(var(--md-obsidian), 0.8) 0%,
+      hsla(var(--md-void), 0.9) 100%
+    );
+    border: 1px solid hsla(var(--md-steel), 0.5);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+  }
+
+  .data-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsla(var(--md-platinum), 0.2) 50%,
+      transparent 100%
+    );
+  }
+
+  .data-card--burn {
+    border-color: hsla(var(--md-burn), 0.3);
+    box-shadow: 
+      0 0 0 1px hsla(var(--md-burn), 0.1),
+      0 4px 24px -4px hsla(var(--md-burn), 0.2),
+      inset 0 1px 0 hsla(var(--md-burn), 0.1);
+  }
+
+  .data-card--burn::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsla(var(--md-burn), 0.4) 50%,
+      transparent 100%
+    );
+  }
+
+  .data-card--secure {
+    border-color: hsla(var(--md-secure), 0.3);
+    box-shadow: 
+      0 0 0 1px hsla(var(--md-secure), 0.1),
+      0 4px 24px -4px hsla(var(--md-secure), 0.15),
+      inset 0 1px 0 hsla(var(--md-secure), 0.1);
+  }
+
+  .data-card--secure::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsla(var(--md-secure), 0.4) 50%,
+      transparent 100%
+    );
+  }
+
+  .data-card--alert {
+    border-color: hsla(var(--md-alert), 0.3);
+    box-shadow: 
+      0 0 0 1px hsla(var(--md-alert), 0.1),
+      0 4px 24px -4px hsla(var(--md-alert), 0.2);
+  }
+
+  /* ============================================
+     DENSE DATA GRID - Financial terminal style
+     ============================================ */
+  .data-grid {
+    display: grid;
+    gap: 1px;
+    background: hsla(var(--md-steel), 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .data-grid__cell {
+    @apply px-3 py-2;
+    background: hsl(var(--md-obsidian));
+    min-width: 0;
+  }
+
+  .data-grid__label {
+    @apply text-xs uppercase tracking-wider;
+    color: hsl(var(--md-slate));
+    font-weight: 500;
+  }
+
+  .data-grid__value {
+    @apply font-data text-sm;
+    color: hsl(var(--md-white));
+  }
+
+  .data-grid__value--positive {
+    color: hsl(var(--md-secure));
+  }
+
+  .data-grid__value--negative {
+    color: hsl(var(--md-burn));
+  }
+
+  .data-grid__value--warning {
+    color: hsl(var(--md-alert));
+  }
+
+  /* ============================================
+     SPARKLINE CONTAINER
+     ============================================ */
+  .sparkline-container {
+    @apply relative h-8 w-full;
+  }
+
+  .sparkline-container svg {
+    @apply absolute inset-0 w-full h-full;
+  }
+
+  /* ============================================
+     LIVE INDICATOR - Heartbeat
+     ============================================ */
+  .live-indicator {
+    @apply relative inline-flex items-center gap-2;
+  }
+
+  .live-indicator__dot {
+    @apply relative w-2 h-2;
+  }
+
+  .live-indicator__dot::before {
+    content: '';
+    @apply absolute inset-0 rounded-full;
+    background: hsl(var(--md-secure));
+    animation: heartbeat 2s ease-in-out infinite;
+  }
+
+  .live-indicator__dot::after {
+    content: '';
+    @apply absolute inset-0 rounded-full;
+    background: hsl(var(--md-secure));
+    animation: heartbeat-ping 2s ease-in-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+
+  @keyframes heartbeat-ping {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(2); opacity: 0; }
+    100% { transform: scale(1); opacity: 0; }
+  }
+
+  .live-indicator__text {
+    @apply text-xs font-medium uppercase tracking-wider;
+    color: hsl(var(--md-secure));
+  }
+
+  /* ============================================
+     CRITICAL PULSE - For urgent metrics
+     ============================================ */
+  .critical-pulse {
+    animation: critical-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes critical-pulse {
+    0%, 100% { 
+      box-shadow: 0 0 0 0 hsla(var(--md-burn), 0.4);
+    }
+    50% { 
+      box-shadow: 0 0 0 8px hsla(var(--md-burn), 0);
+    }
+  }
+
+  /* ============================================
+     STATUS BADGES - Compact, dense
+     ============================================ */
+  .status-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wider;
+    font-size: 10px;
+  }
+
+  .status-badge--secure {
+    background: hsla(var(--md-secure), 0.15);
+    color: hsl(var(--md-secure));
+    border: 1px solid hsla(var(--md-secure), 0.3);
+  }
+
+  .status-badge--burn {
+    background: hsla(var(--md-burn), 0.15);
+    color: hsl(var(--md-burn));
+    border: 1px solid hsla(var(--md-burn), 0.3);
+  }
+
+  .status-badge--alert {
+    background: hsla(var(--md-alert), 0.15);
+    color: hsl(var(--md-alert));
+    border: 1px solid hsla(var(--md-alert), 0.3);
+  }
+
+  .status-badge--neutral {
+    background: hsla(var(--md-steel), 0.3);
+    color: hsl(var(--md-silver));
+    border: 1px solid hsla(var(--md-steel), 0.5);
+  }
+
+  /* ============================================
+     PROGRESS BARS - Minimal, data-focused
+     ============================================ */
+  .progress-bar {
+    @apply relative h-1 w-full overflow-hidden rounded-full;
+    background: hsla(var(--md-steel), 0.3);
+  }
+
+  .progress-bar__fill {
+    @apply absolute top-0 left-0 h-full rounded-full;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .progress-bar__fill--secure {
+    background: linear-gradient(90deg, hsl(var(--md-secure-dim)), hsl(var(--md-secure)));
+    box-shadow: 0 0 12px hsla(var(--md-secure), 0.4);
+  }
+
+  .progress-bar__fill--burn {
+    background: linear-gradient(90deg, hsl(var(--md-burn-dim)), hsl(var(--md-burn)));
+    box-shadow: 0 0 12px hsla(var(--md-burn), 0.4);
+  }
+
+  .progress-bar__fill--alert {
+    background: linear-gradient(90deg, hsl(var(--md-alert-dim)), hsl(var(--md-alert)));
+    box-shadow: 0 0 12px hsla(var(--md-alert), 0.4);
+  }
+
+  /* ============================================
+     MICRO CHART - Inline sparklines
+     ============================================ */
+  .micro-chart {
+    @apply inline-flex items-end gap-px h-4;
+  }
+
+  .micro-chart__bar {
+    @apply w-1 rounded-t-sm;
+    background: hsla(var(--md-info), 0.6);
+    transition: height 0.3s ease;
+  }
+
+  .micro-chart__bar--positive {
+    background: hsla(var(--md-secure), 0.8);
+  }
+
+  .micro-chart__bar--negative {
+    background: hsla(var(--md-burn), 0.8);
+  }
+
+  /* ============================================
+     BUTTONS - Premium, tactile
+     ============================================ */
+  .btn-premium {
+    @apply relative inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm;
+    @apply transition-all duration-200;
+    background: linear-gradient(
+      145deg,
+      hsla(var(--md-graphite), 0.8) 0%,
+      hsla(var(--md-obsidian), 0.9) 100%
+    );
+    border: 1px solid hsla(var(--md-steel), 0.5);
+    color: hsl(var(--md-chrome));
+  }
+
+  .btn-premium:hover {
+    background: linear-gradient(
+      145deg,
+      hsla(var(--md-steel), 0.5) 0%,
+      hsla(var(--md-graphite), 0.8) 100%
+    );
+    border-color: hsla(var(--md-platinum), 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-premium:active {
+    transform: translateY(0);
+  }
+
+  .btn-premium--primary {
+    background: linear-gradient(
+      145deg,
+      hsla(var(--md-info), 0.9) 0%,
+      hsla(217, 91%, 50%, 0.9) 100%
+    );
+    border-color: hsla(var(--md-info), 0.5);
+    color: hsl(var(--md-white));
+    box-shadow: 0 4px 12px -2px hsla(var(--md-info), 0.3);
+  }
+
+  .btn-premium--danger {
+    background: linear-gradient(
+      145deg,
+      hsla(var(--md-burn), 0.9) 0%,
+      hsla(4, 90%, 48%, 0.9) 100%
+    );
+    border-color: hsla(var(--md-burn), 0.5);
+    color: hsl(var(--md-white));
+    box-shadow: 0 4px 12px -2px hsla(var(--md-burn), 0.3);
+  }
+
+  /* ============================================
+     CLIENT ROW - Dense list view
+     ============================================ */
+  .client-row {
+    @apply flex items-center gap-4 px-4 py-3;
+    @apply border-b border-[hsla(var(--md-steel),0.3)];
+    @apply transition-colors duration-150;
+  }
+
+  .client-row:hover {
+    background: hsla(var(--md-graphite), 0.3);
+  }
+
+  .client-row--critical {
+    border-left: 3px solid hsl(var(--md-burn));
+    background: hsla(var(--md-burn), 0.05);
+  }
+
+  .client-row--warning {
+    border-left: 3px solid hsl(var(--md-alert));
+    background: hsla(var(--md-alert), 0.03);
+  }
+
+  /* ============================================
+     ALERT STRIP - Urgent notifications
+     ============================================ */
+  .alert-strip {
+    @apply flex items-center gap-3 px-4 py-2;
+    background: linear-gradient(
+      90deg,
+      hsla(var(--md-burn), 0.15) 0%,
+      hsla(var(--md-burn), 0.05) 100%
+    );
+    border-left: 3px solid hsl(var(--md-burn));
+  }
+
+  .alert-strip--warning {
+    background: linear-gradient(
+      90deg,
+      hsla(var(--md-alert), 0.15) 0%,
+      hsla(var(--md-alert), 0.05) 100%
+    );
+    border-left-color: hsl(var(--md-alert));
+  }
+
+  /* ============================================
+     SECTION HEADERS
+     ============================================ */
+  .section-header {
+    @apply flex items-center justify-between mb-4;
+  }
+
+  .section-header__title {
+    @apply text-sm font-semibold uppercase tracking-wider;
+    color: hsl(var(--md-slate));
+  }
+
+  .section-header__action {
+    @apply text-xs font-medium;
+    color: hsl(var(--md-info));
+  }
+
+  /* ============================================
+     SCROLLBAR - Minimal
+     ============================================ */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsla(var(--md-steel), 0.5);
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsla(var(--md-steel), 0.8);
+  }
+
+  /* ============================================
+     UTILITY CLASSES
+     ============================================ */
+  .text-secure { color: hsl(var(--md-secure)); }
+  .text-burn { color: hsl(var(--md-burn)); }
+  .text-alert { color: hsl(var(--md-alert)); }
+  .text-info { color: hsl(var(--md-info)); }
+  .text-muted { color: hsl(var(--md-slate)); }
+  .text-secondary { color: hsl(var(--md-silver)); }
+  .text-primary { color: hsl(var(--md-chrome)); }
+  .text-emphasis { color: hsl(var(--md-white)); }
+
+  .bg-card { background: hsl(var(--md-obsidian)); }
+  .bg-elevated { background: hsl(var(--md-graphite)); }
+  .bg-void { background: hsl(var(--md-void)); }
+
+  .border-subtle { border-color: hsla(var(--md-steel), 0.3); }
+  .border-medium { border-color: hsla(var(--md-steel), 0.5); }
+
+  /* Glow utilities */
+  .glow-secure { box-shadow: 0 0 20px hsla(var(--md-secure), 0.3); }
+  .glow-burn { box-shadow: 0 0 20px hsla(var(--md-burn), 0.3); }
+  .glow-alert { box-shadow: 0 0 20px hsla(var(--md-alert), 0.3); }
+  .glow-info { box-shadow: 0 0 20px hsla(var(--md-info), 0.3); }
+
+  /* Number formatting */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Transitions */
+  .transition-premium {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes count-up {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out;
+}
